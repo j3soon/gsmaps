@@ -1,0 +1,11 @@
+Model Information:
+* title:	low poly city
+* source:	https://sketchfab.com/3d-models/low-poly-city-c41536b9f8d24ff1b42656f98be032ba
+* author:	Igor Tretyakov (https://sketchfab.com/vdv77)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "low poly city" (https://sketchfab.com/3d-models/low-poly-city-c41536b9f8d24ff1b42656f98be032ba) by Igor Tretyakov (https://sketchfab.com/vdv77) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
