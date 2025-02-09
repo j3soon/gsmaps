@@ -9,6 +9,7 @@ export const locations: {
 	labelPosition: [number, number, number];
 	viewPosition?: [number, number, number];
 	category: string;
+	images?: string[]; // Array of image URLs for the location
 }[] = [
 	{
 		id: 2,
@@ -21,6 +22,12 @@ export const locations: {
 		bbSize: [4.5, 3, 16],
 		labelPosition: [-17.5, 1, 11],
 		category: 'Campus Canteen',
+		images: [
+			'https://picsum.photos/seed/shuimu1/100/100',
+			'https://picsum.photos/seed/shuimu2/100/100',
+			'https://picsum.photos/seed/shuimu3/100/100',
+			'https://picsum.photos/seed/shuimu4/100/100',
+		],
 	},
 	{
 		id: 1,
@@ -34,6 +41,11 @@ export const locations: {
 		labelPosition: [-21, 1, -8],
 		viewPosition: [-10, 3, -8],
 		category: 'Campus Canteen',
+		images: [
+			'https://picsum.photos/seed/xcb1/100/100',
+			'https://picsum.photos/seed/xcb2/100/100',
+			'https://picsum.photos/seed/xcb3/100/100',
+		],
 	},
 	{
 		id: 11,
