@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Building, ForkKnife, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
+import { locationTypeIcons } from '@/lib/icons';
 
 import {
 	CommandDialog,
@@ -71,11 +72,9 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({
 									.filter((l) => l.category === category)
 									.map((l) => (
 										<CommandItem key={l.id} onSelect={() => handleLocationClick(l.id)}>
-											{l.category === 'Campus Canteen' ? (
-												<ForkKnife className="mr-2 h-4 w-4" />
-											) : (
-												<Building className="mr-2 h-4 w-4" />
-											)}
+											{React.createElement(locationTypeIcons[l.category], {
+												className: 'mr-2 h-4 w-4',
+											})}
 											<span className="font-semibold">{l.name}</span>
 										</CommandItem>
 									))}

@@ -1,7 +1,8 @@
 import { Html } from '@react-three/drei';
-import { ChevronsUpDown, Utensils, X } from 'lucide-react';
+import { ChevronsUpDown, X } from 'lucide-react';
+import { locationTypeIcons } from '../lib/icons';
 import { animated, useSpring } from '@react-spring/web';
-import { useEffect } from 'react';
+import { createElement, useEffect } from 'react';
 import { locations } from '@/lib/locations';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
@@ -76,7 +77,9 @@ const Label = ({ position, number, isCameraMove, isSelected, onClose }: LabelPro
 					</Collapsible>
 				) : (
 					<div className="flex items-center justify-between gap-2 px-2">
-						<Utensils size={12} />
+						{createElement(locationTypeIcons[location?.category ?? 'General Buildings'], {
+							size: 12,
+						})}
 						<span className="text-sm font-semibold">{number}</span>
 					</div>
 				)}

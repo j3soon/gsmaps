@@ -1,15 +1,15 @@
 import { Canvas } from '@react-three/fiber';
-import { Bounds, Environment, Stats, useBounds } from '@react-three/drei';
+import { Bounds, Environment, useBounds } from '@react-three/drei';
 import Splat from './components/splat';
 import Camera from './components/camera';
 import BoundingBox, { BoundedBoxOutlineRef } from './components/boundingbox';
-import { Footprints, LocateFixed, Search } from 'lucide-react';
+import { Footprints, LocateFixed } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { useEffect, useRef, useState } from 'react';
 import Label from './components/label';
 import { locations } from './lib/locations';
 import { LocationSearch } from './components/locationSearch';
-import CurrentLocation from './components/CurrentLocation';
+import CurrentLocation from './components/currentLocation';
 
 interface BoundedBoxesProps {
 	isCameraMove: boolean;
