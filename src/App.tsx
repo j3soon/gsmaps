@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import Label from './components/label';
 import { locations } from './lib/locations';
 import { LocationSearch } from './components/locationSearch';
+import CurrentLocation from './components/CurrentLocation';
 
 interface BoundedBoxesProps {
 	isCameraMove: boolean;
@@ -110,6 +111,8 @@ const App = () => {
 			<div className="fixed left-4 top-4 z-10">
 				<LocationSearch setIsCameraMove={setIsCameraMove} onLocationSelect={handleLocationSelect} />
 			</div>
+
+			<CurrentLocation selectedBox={selectedBox} onClose={handleClose} />
 
 			<div className="fixed bottom-4 right-4 z-10 flex flex-col gap-4">
 				<Button size="icon" variant="ghost" className="h-16 w-16">
