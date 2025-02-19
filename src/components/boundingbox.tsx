@@ -3,49 +3,34 @@ import { useState, useMemo, useRef, useImperativeHandle, forwardRef } from 'reac
 import * as THREE from 'three';
 
 interface BoxOutlineProps {
-	position: [number, number, number];
-	rotation: [number, number, number];
-	boxargs: [number, number, number];
-	viewPosition?: [number, number, number];
+	coordinates: number[][];
+	startHeight: number;
+	endHeight: number;
 	isCameraMove: boolean;
 	setIsCameraMove: React.Dispatch<React.SetStateAction<boolean>>;
 	boxNumber: number;
 	onSelect: (boxNumber: number) => void;
 }
 
-// Add a ref type for the exposed methods
 export interface BoundedBoxOutlineRef {
 	boundBox: () => void;
 }
 
 const BoundedBoxOutline = forwardRef<BoundedBoxOutlineRef, BoxOutlineProps>(
 	(
-		{
-			position,
-			rotation,
-			boxargs,
-			viewPosition,
-			isCameraMove,
-			setIsCameraMove,
-			boxNumber,
-			onSelect,
-		},
+		{ coordinates, startHeight, endHeight, isCameraMove, setIsCameraMove, boxNumber, onSelect },
 		ref
 	) => {
 		const interpolateFunc = (t: number) => {
 			const value = 1 - Math.exp(-5 * t) + 0.007 * t;
-
 			if (1 - value < 0.01) {
 				setTimeout(() => setIsCameraMove(false), 500);
 			}
-
 			return value;
 		};
 
-		// Create a ref to the BoxOutline component
 		const boxOutlineRef = useRef<BoxOutlineRef>(null);
 
-		// Expose the boundBox method through the ref
 		useImperativeHandle(ref, () => ({
 			boundBox: () => {
 				boxOutlineRef.current?.boundBox();
@@ -56,10 +41,9 @@ const BoundedBoxOutline = forwardRef<BoundedBoxOutlineRef, BoxOutlineProps>(
 			<Bounds margin={1.2} maxDuration={1} interpolateFunc={interpolateFunc}>
 				<BoxOutline
 					ref={boxOutlineRef}
-					position={position}
-					rotation={rotation}
-					boxargs={boxargs}
-					viewPosition={viewPosition}
+					coordinates={coordinates}
+					startHeight={startHeight}
+					endHeight={endHeight}
 					isCameraMove={isCameraMove}
 					setIsCameraMove={setIsCameraMove}
 					onSelect={onSelect}
@@ -70,78 +54,100 @@ const BoundedBoxOutline = forwardRef<BoundedBoxOutlineRef, BoxOutlineProps>(
 	}
 );
 
-// Add a ref type for the BoxOutline component
 interface BoxOutlineRef {
 	boundBox: () => void;
 }
 
 const BoxOutline = forwardRef<BoxOutlineRef, BoxOutlineProps>(
-	({ position, rotation, boxargs, viewPosition, setIsCameraMove, boxNumber, onSelect }, ref) => {
+	({ coordinates, startHeight, endHeight, setIsCameraMove, boxNumber, onSelect }, ref) => {
 		const [hovered, setHovered] = useState(false);
-		const meshRef = useRef<THREE.Mesh>(null);
+		const meshRef = useRef<THREE.Group>(null);
 		const bounds = useBounds();
 
-		const edgePoints = useMemo(() => {
-			const boxGeometry = new THREE.BoxGeometry(...boxargs);
-			const edgesGeometry = new THREE.EdgesGeometry(boxGeometry);
-			const positions = edgesGeometry.attributes.position.array;
-			const points: THREE.Vector3[] = [];
+		const geometry = useMemo(() => {
+			// Create lines for vertical edges
+			const verticalLines: [THREE.Vector3, THREE.Vector3][] = coordinates.map(([x, z]) => [
+				new THREE.Vector3(x, startHeight, z),
+				new THREE.Vector3(x, startHeight + endHeight, z),
+			]);
 
-			for (let i = 0; i < positions.length; i += 3) {
-				points.push(new THREE.Vector3(positions[i], positions[i + 1], positions[i + 2]));
+			// Create lines for top and bottom edges
+			const horizontalLines: [THREE.Vector3, THREE.Vector3][] = [];
+			for (let i = 0; i < coordinates.length; i++) {
+				const [x1, z1] = coordinates[i];
+				const [x2, z2] = coordinates[(i + 1) % coordinates.length];
+
+				// Bottom edges
+				horizontalLines.push([
+					new THREE.Vector3(x1, startHeight, z1),
+					new THREE.Vector3(x2, startHeight, z2),
+				]);
+
+				// Top edges
+				horizontalLines.push([
+					new THREE.Vector3(x1, startHeight + endHeight, z1),
+					new THREE.Vector3(x2, startHeight + endHeight, z2),
+				]);
 			}
 
-			return points;
-		}, [boxargs]);
+			return [...verticalLines, ...horizontalLines];
+		}, [coordinates, startHeight, endHeight]);
+
+		const shapeGeometry = useMemo(() => {
+			const shape = new THREE.Shape();
+			coordinates.forEach(([x, z], i) => {
+				if (i === 0) {
+					shape.moveTo(x, z);
+				} else {
+					shape.lineTo(x, z);
+				}
+			});
+			shape.closePath();
+
+			const extrudeSettings = {
+				steps: 1,
+				depth: endHeight,
+				bevelEnabled: false,
+			};
+
+			return new THREE.ExtrudeGeometry(shape, extrudeSettings);
+		}, [coordinates, startHeight, endHeight]);
 
 		const boundBox = () => {
 			if (meshRef.current) {
 				setIsCameraMove(true);
 				onSelect(boxNumber);
-
-				if (viewPosition) {
-					bounds.refresh(meshRef.current).moveTo(viewPosition).lookAt({ target: position });
-					return;
-				}
-
 				bounds.refresh(meshRef.current).fit();
 			}
 		};
 
-		// Expose the boundBox method through the ref
 		useImperativeHandle(ref, () => ({
 			boundBox,
 		}));
 
 		return (
-			<group position={position} rotation={rotation}>
-				{edgePoints.map(
-					(_, i) =>
-						i % 2 === 0 && (
-							<mesh key={i}>
-								<tubeGeometry
-									args={[
-										new THREE.LineCurve3(edgePoints[i], edgePoints[i + 1]),
-										1,
-										hovered ? 0.2 : 0.05,
-										8,
-										false,
-									]}
-								/>
-								<meshBasicMaterial color={hovered ? 'white' : 'white'} />
-							</mesh>
-						)
-				)}
+			<group
+				ref={meshRef}
+				onPointerOver={() => setHovered(true)}
+				onPointerOut={() => setHovered(false)}
+				onClick={(e) => {
+					e.stopPropagation();
+					boundBox();
+				}}
+			>
+				{geometry.map((line, i) => (
+					<mesh key={i}>
+						<tubeGeometry
+							args={[new THREE.LineCurve3(line[0], line[1]), 1, hovered ? 0.2 : 0.05, 8, false]}
+						/>
+						<meshBasicMaterial color={hovered ? 'white' : 'white'} />
+					</mesh>
+				))}
 				<mesh
-					ref={meshRef}
-					onPointerOver={() => setHovered(true)}
-					onPointerOut={() => setHovered(false)}
-					onClick={(e) => {
-						e.stopPropagation();
-						boundBox();
-					}}
+					geometry={shapeGeometry}
+					position={[0, endHeight + startHeight, 0]}
+					rotation={[Math.PI / 2, 0, 0]}
 				>
-					<boxGeometry args={boxargs} />
 					<meshBasicMaterial visible={false} />
 				</mesh>
 			</group>

@@ -5,8 +5,8 @@ import { ChevronsUpDown, X } from 'lucide-react';
 import { locationTypeIcons } from '../lib/icons';
 import { animated, useSpring } from '@react-spring/web';
 import { createElement, useEffect } from 'react';
-import { locations } from '@/lib/locations';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import data from '@/lib/dataresized';
 
 interface LabelProps {
 	position: [number, number, number];
@@ -92,7 +92,7 @@ const Label = ({ position, number, isCameraMove, isSelected, onClose }: LabelPro
 		});
 	}, [isCameraMove, api]);
 
-	const location = locations.find((l) => l.id === number);
+	const location = data.locations.find((l) => l.id === number);
 	const [isExpanded, setIsExpanded] = useState(false);
 
 	return (
@@ -119,7 +119,7 @@ const Label = ({ position, number, isCameraMove, isSelected, onClose }: LabelPro
 										<span className="sr-only">Toggle</span>
 									</button>
 								</CollapsibleTrigger>
-								<h4 className="text-nowrap text-sm font-semibold">{location?.name}</h4>
+								<h4 className="text-nowrap text-sm font-semibold">{location?.name.en}</h4>
 								<button
 									onClick={(e) => {
 										e.stopPropagation();
@@ -133,10 +133,10 @@ const Label = ({ position, number, isCameraMove, isSelected, onClose }: LabelPro
 							<CollapsibleContent className="w-96 space-y-2">
 								<ImageCarousel images={location?.images} />
 								<div className="space-y-2 p-2">
-									<div className="text-sm text-muted-foreground">{location?.description}</div>
+									<div className="text-sm text-muted-foreground">{location?.description.en}</div>
 									<a
 										target="_blank"
-										href={location?.gmapsUrl}
+										href={location?.maps_url}
 										className="block text-xs text-blue-500 hover:underline"
 									>
 										View on Google Maps
@@ -147,7 +147,7 @@ const Label = ({ position, number, isCameraMove, isSelected, onClose }: LabelPro
 					</div>
 				) : (
 					<div className="flex items-center justify-between gap-2 px-2">
-						{createElement(locationTypeIcons[location?.category ?? 'General Buildings'], {
+						{createElement(locationTypeIcons[location?.type ?? 'General Buildings'], {
 							size: 12,
 						})}
 						<span className="text-sm font-semibold">{number}</span>

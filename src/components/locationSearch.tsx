@@ -12,7 +12,7 @@ import {
 	CommandSeparator,
 } from '@/components/ui/command';
 import { Button } from './ui/button';
-import { locations } from '@/lib/locations';
+import data from '@/lib/dataresized';
 
 interface LocationSearchProps {
 	setIsCameraMove: React.Dispatch<React.SetStateAction<boolean>>;
@@ -65,17 +65,17 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({
 				<CommandInput placeholder="Search a location..." />
 				<CommandList>
 					<CommandEmpty>No results found.</CommandEmpty>
-					{[...new Set(locations.map((l) => l.category))].map((category) => (
+					{[...new Set(data.locations.map((l) => l.type))].map((category) => (
 						<React.Fragment key={category}>
 							<CommandGroup heading={category}>
-								{locations
-									.filter((l) => l.category === category)
+								{data.locations
+									.filter((l) => l.type === category)
 									.map((l) => (
 										<CommandItem key={l.id} onSelect={() => handleLocationClick(l.id)}>
-											{React.createElement(locationTypeIcons[l.category], {
+											{React.createElement(locationTypeIcons[l.type], {
 												className: 'mr-2 h-4 w-4',
 											})}
-											<span className="font-semibold">{l.name}</span>
+											<span className="font-semibold">{l.name.en}</span>
 										</CommandItem>
 									))}
 							</CommandGroup>

@@ -7,9 +7,9 @@ import { Footprints, LocateFixed } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { useEffect, useRef, useState } from 'react';
 import Label from './components/label';
-import { locations } from './lib/locations';
 import { LocationSearch } from './components/locationSearch';
 import CurrentLocation from './components/currentLocation';
+import data from '@/lib/dataresized';
 
 interface BoundedBoxesProps {
 	isCameraMove: boolean;
@@ -49,18 +49,17 @@ const BoundedBoxes: React.FC<BoundedBoxesProps> = ({
 
 	return (
 		<>
-			{locations.map((location, index) => (
+			{data.locations.map((location, index) => (
 				<BoundingBox
 					ref={(el) => (boxRefs.current[index] = el)}
 					key={location.id}
-					position={location.bbPosition}
-					rotation={location.bbRotation}
-					boxargs={location.bbSize}
+					coordinates={location.geometry.coordinates}
+					startHeight={location.geometry.start_height}
+					endHeight={location.geometry.height}
 					isCameraMove={isCameraMove}
 					setIsCameraMove={setIsCameraMove}
 					boxNumber={location.id}
 					onSelect={handleBoxSelect}
-					viewPosition={location.viewPosition}
 				/>
 			))}
 		</>
@@ -76,7 +75,7 @@ const App = () => {
 
 	// Initialize refs array
 	useEffect(() => {
-		boxRefs.current = boxRefs.current.slice(0, locations.length);
+		boxRefs.current = boxRefs.current.slice(0, data.locations.length);
 	}, []);
 
 	const handleBoxSelect = (boxNumber: number) => {
@@ -89,7 +88,7 @@ const App = () => {
 	};
 
 	const handleLocationSelect = (locationId: number) => {
-		const index = locations.findIndex((loc) => loc.id === locationId);
+		const index = data.locations.findIndex((loc) => loc.id === locationId);
 		if (index !== -1 && boxRefs.current[index]) {
 			boxRefs.current[index]?.boundBox();
 			setSelectedBox(locationId);
@@ -112,7 +111,17 @@ const App = () => {
 				<LocationSearch setIsCameraMove={setIsCameraMove} onLocationSelect={handleLocationSelect} />
 			</div>
 
-			<CurrentLocation selectedBox={selectedBox} onClose={handleClose} />
+			<CurrentLocation
+				selectedBox={selectedBox}
+				onClose={handleClose}
+				onNavigateTo={(location) => {
+					const index = data.locations.findIndex((loc) => loc.id === location.id);
+					if (index !== -1 && boxRefs.current[index]) {
+						boxRefs.current[index]?.boundBox();
+						setSelectedBox(location.id);
+					}
+				}}
+			/>
 
 			<div className="fixed bottom-4 right-4 z-10 flex flex-col gap-4">
 				<Button size="icon" variant="ghost" className="h-16 w-16">
@@ -133,17 +142,27 @@ const App = () => {
 						backgroundIntensity={1}
 					/>
 
-					<group rotation={[-Math.PI / 2, 0, 0]} scale={[10, 10, 10]}>
+					<group rotation={[-Math.PI / 2, 0, 0]} scale={[20, 20, 20]}>
 						<Splat
 							sources={['nthu_campus_part.compressed.ply']}
 							setIsSplatsLoaded={setIsSplatsLoaded}
 						/>
 					</group>
 
-					{locations.map((location) => (
+					{data.locations.map((location) => (
 						<Label
 							key={location.id}
-							position={location.labelPosition}
+							position={(() => {
+								const sum = location.geometry.coordinates.reduce(
+									(acc, curr) => [acc[0] + curr[0], acc[1] + curr[1]],
+									[0, 0]
+								);
+								return [
+									sum[0] / location.geometry.coordinates.length,
+									location.geometry.start_height + location.geometry.height + 2,
+									sum[1] / location.geometry.coordinates.length,
+								];
+							})()}
 							number={location.id}
 							isCameraMove={isCameraMove}
 							isSelected={selectedBox === location.id}

@@ -1,0 +1,87 @@
+{
+	"version": "v1-0",
+	"locations": [
+		{
+			"id": 3,
+			"name": {
+				"en": "Shui Mu Restaurant",
+				"cn": "水木餐廳"
+			},
+			"description": {
+				"en": "Place to eat",
+				"cn": "清大餐廳"
+			},
+			"type": "restaurant",
+			"geometry": {
+				"type": "polygon",
+				"coordinates": [
+					[-176.94920426422865, 30.533619999569481],
+					[-211.45757357690852, 71.031043081539309],
+					[-185.50499682473853, 156.58897547655258],
+					[-138.73331543653873, 179.6896308125001]
+				],
+				"start_height": -40,
+				"height": 32.457656860351562
+			},
+			"maps_url": "https://goo.gl/maps/6H5vBBmfezozYtbf7",
+			"images": [
+				"https://picsum.photos/seed/shuimu1/100/100",
+				"https://picsum.photos/seed/shuimu2/100/100",
+				"https://picsum.photos/seed/shuimu3/100/100",
+				"https://picsum.photos/seed/shuimu4/100/100"
+			]
+		},
+		{
+			"id": 1,
+			"name": {
+				"en": "XCB",
+				"cn": "小吃部"
+			},
+			"description": {
+				"en": "Place to Eat",
+				"cn": "清大餐廳"
+			},
+			"type": "restaurant",
+			"geometry": {
+				"type": "polygon",
+				"coordinates": [
+					[-243.85372511350758, -73.065025521839274],
+					[-202.80373491663701, -111.49480298291334],
+					[-158.6968326454498, -93.153312892602557],
+					[-211.10107517139474, -42.714231876313981]
+				],
+				"start_height": -40,
+				"height": 26.33104133605957
+			},
+			"maps_url": "https://goo.gl/maps/6H5vBBmfezozYtbf7",
+			"images": [
+				"https://picsum.photos/seed/xcb1/100/100",
+				"https://picsum.photos/seed/xcb2/100/100",
+				"https://picsum.photos/seed/xcb3/100/100"
+			]
+		},
+		{
+			"id": 2,
+			"name": {
+				"en": "Demolished Building",
+				"cn": "Super Idol"
+			},
+			"description": {
+				"en": "A building",
+				"cn": "CN building"
+			},
+			"type": "lecture_hall",
+			"geometry": {
+				"type": "polygon",
+				"coordinates": [
+					[-108.70118360079778, -59.385729720773725],
+					[-61.94182219195136, -69.330026843766518],
+					[-49.881712475505992, -18.762212420118431],
+					[-99.603203424489948, -14.107440179107925]
+				],
+				"start_height": -40,
+				"height": 60
+			}
+		}
+	]
+}
