@@ -10,6 +10,9 @@ import Label from './components/label';
 import { LocationSearch } from './components/locationSearch';
 import CurrentLocation from './components/currentLocation';
 import data from '@/lib/dataresized';
+import OmniverseStream from './components/omniverseStream';
+import { Switch } from './components/ui/switch';
+import { omniverseConfig, cameraPositions } from './lib/omni';
 
 interface BoundedBoxesProps {
 	isCameraMove: boolean;
@@ -72,6 +75,7 @@ const App = () => {
 	const [isSplatsLoaded, setIsSplatsLoaded] = useState(false);
 	const [isCameraReturn, setIsCameraReturn] = useState(false);
 	const boxRefs = useRef<(BoundedBoxOutlineRef | null)[]>([]);
+	const [useOmniverse, setUseOmniverse] = useState(false);
 
 	// Initialize refs array
 	useEffect(() => {
@@ -111,80 +115,118 @@ const App = () => {
 				<LocationSearch setIsCameraMove={setIsCameraMove} onLocationSelect={handleLocationSelect} />
 			</div>
 
-			<CurrentLocation
-				selectedBox={selectedBox}
-				onClose={handleClose}
-				onNavigateTo={(location) => {
-					const index = data.locations.findIndex((loc) => loc.id === location.id);
-					if (index !== -1 && boxRefs.current[index]) {
-						boxRefs.current[index]?.boundBox();
-						setSelectedBox(location.id);
-					}
-				}}
-			/>
-
-			<div className="fixed bottom-4 right-4 z-10 flex flex-col gap-4">
-				<Button size="icon" variant="ghost" className="h-16 w-16">
-					<LocateFixed className="!h-6 !w-6" />
-				</Button>
-				<Button size="icon" variant="ghost" className="h-16 w-16">
-					<Footprints className="!h-6 !w-6" />
-				</Button>
+			<div className="fixed left-4 top-20 z-10 flex items-center gap-2 rounded-md bg-white/80 p-2">
+				<span className="text-sm font-medium">ThreeJS</span>
+				<Switch checked={useOmniverse} onCheckedChange={setUseOmniverse} />
+				<span className="text-sm font-medium">Omniverse</span>
 			</div>
 
-			<div className="h-screen w-full">
-				<Canvas>
-					<Camera isCameraMove={isCameraMove} />
-
-					<Environment
-						background={true}
-						files={'evening_road_01_puresky_1k.hdr'}
-						backgroundIntensity={1}
+			{!useOmniverse ? (
+				<>
+					<CurrentLocation
+						selectedBox={selectedBox}
+						onClose={handleClose}
+						onNavigateTo={(location) => {
+							const index = data.locations.findIndex((loc) => loc.id === location.id);
+							if (index !== -1 && boxRefs.current[index]) {
+								boxRefs.current[index]?.boundBox();
+								setSelectedBox(location.id);
+							}
+						}}
 					/>
 
-					<group rotation={[-Math.PI / 2, 0, 0]} scale={[20, 20, 20]}>
-						<Splat
-							sources={['nthu_campus_part.compressed.ply']}
-							setIsSplatsLoaded={setIsSplatsLoaded}
-						/>
-					</group>
+					<div className="fixed bottom-4 right-4 z-10 flex flex-col gap-4">
+						<Button size="icon" variant="ghost" className="h-16 w-16">
+							<LocateFixed className="!h-6 !w-6" />
+						</Button>
+						<Button size="icon" variant="ghost" className="h-16 w-16">
+							<Footprints className="!h-6 !w-6" />
+						</Button>
+					</div>
 
-					{data.locations.map((location) => (
-						<Label
-							key={location.id}
-							position={(() => {
+					<div className="h-screen w-full">
+						<Canvas>
+							<Camera isCameraMove={isCameraMove} />
+
+							<Environment
+								background={true}
+								files={'evening_road_01_puresky_1k.hdr'}
+								backgroundIntensity={1}
+							/>
+
+							<group rotation={[-Math.PI / 2, 0, 0]} scale={[20, 20, 20]}>
+								<Splat
+									sources={['nthu_campus_part.compressed.ply']}
+									setIsSplatsLoaded={setIsSplatsLoaded}
+								/>
+							</group>
+
+							{data.locations.map((location) => (
+								<Label
+									key={location.id}
+									position={(() => {
+										const sum = location.geometry.coordinates.reduce(
+											(acc, curr) => [acc[0] + curr[0], acc[1] + curr[1]],
+											[0, 0]
+										);
+										return [
+											sum[0] / location.geometry.coordinates.length,
+											location.geometry.start_height + location.geometry.height + 2,
+											sum[1] / location.geometry.coordinates.length,
+										];
+									})()}
+									number={location.id}
+									isCameraMove={isCameraMove}
+									isSelected={selectedBox === location.id}
+									onClose={handleClose}
+								/>
+							))}
+
+							<Bounds margin={1.2} maxDuration={1} interpolateFunc={interpolateFunc}>
+								<BoundedBoxes
+									isCameraMove={isCameraMove}
+									setIsCameraMove={setIsCameraMove}
+									handleBoxSelect={handleBoxSelect}
+									isSplatsLoaded={isSplatsLoaded}
+									isCameraReturn={isCameraReturn}
+									setIsCameraReturn={setIsCameraReturn}
+									boxRefs={boxRefs}
+								/>
+							</Bounds>
+
+							<hemisphereLight args={[0xffeeb1, 0x080820, 1]} />
+						</Canvas>
+					</div>
+				</>
+			) : (
+			<div className="h-screen w-full">
+				<OmniverseStream config={omniverseConfig} />
+
+				{/* Keep location search in Omniverse view as well */}
+				<div className="fixed left-4 top-4 z-10">
+					<LocationSearch
+						setIsCameraMove={setIsCameraMove}
+						onLocationSelect={(locationId) => {
+							// Find the location data
+							const location = data.locations.find(loc => loc.id === locationId);
+							if (location) {
+								// Calculate center position of the location
 								const sum = location.geometry.coordinates.reduce(
 									(acc, curr) => [acc[0] + curr[0], acc[1] + curr[1]],
 									[0, 0]
 								);
-								return [
-									sum[0] / location.geometry.coordinates.length,
-									location.geometry.start_height + location.geometry.height + 2,
-									sum[1] / location.geometry.coordinates.length,
-								];
-							})()}
-							number={location.id}
-							isCameraMove={isCameraMove}
-							isSelected={selectedBox === location.id}
-							onClose={handleClose}
-						/>
-					))}
+								const centerX = sum[0] / location.geometry.coordinates.length;
+								const centerZ = sum[1] / location.geometry.coordinates.length;
+								const centerY = location.geometry.start_height + location.geometry.height + 10;
 
-					<Bounds margin={1.2} maxDuration={1} interpolateFunc={interpolateFunc}>
-						<BoundedBoxes
-							isCameraMove={isCameraMove}
-							setIsCameraMove={setIsCameraMove}
-							handleBoxSelect={handleBoxSelect}
-							isSplatsLoaded={isSplatsLoaded}
-							isCameraReturn={isCameraReturn}
-							setIsCameraReturn={setIsCameraReturn}
-							boxRefs={boxRefs}
-						/>
-					</Bounds>
-
-					<hemisphereLight args={[0xffeeb1, 0x080820, 1]} />
-				</Canvas>
+								// Update selected box state
+								setSelectedBox(locationId);
+							}
+						}}
+					/>
+				</div>
 			</div>
+			)}
 		</>
 	);
 };
