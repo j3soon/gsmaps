@@ -1,0 +1,43 @@
+<script lang="ts">
+	import { T, useTask, useThrelte } from '@threlte/core';
+	import type CC from 'camera-controls';
+	import { onDestroy } from 'svelte';
+	import { PerspectiveCamera } from 'three';
+	import CameraControls from './camera-controls';
+
+	let {
+		controls = $bindable()
+	}: {
+		controls: CC | undefined;
+	} = $props();
+
+	const { dom, invalidate } = useThrelte();
+	const camera = new PerspectiveCamera();
+
+	controls = new CameraControls(dom, camera);
+
+	const fixedHeight = 100;
+	controls.setPosition(100, 100, fixedHeight, false);
+	controls.rotateTo(0, 0, false);
+
+	controls.mouseButtons.left = CameraControls.ACTION.SCREEN_PAN;
+	controls.mouseButtons.right = CameraControls.ACTION.ROTATE;
+	controls.mouseButtons.wheel = CameraControls.ACTION.ZOOM;
+
+	controls.truckSpeed = 2;
+
+	useTask(
+		(delta) => {
+			if (controls.update(delta)) {
+				invalidate();
+			}
+		},
+		{ autoInvalidate: false }
+	);
+
+	onDestroy(() => {
+		controls.dispose();
+	});
+</script>
+
+<T is={camera} makeDefault />
