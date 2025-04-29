@@ -1,38 +1,36 @@
-# sv
+# GSMaps
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
+Google maps but its gaussian splats
+with a hint of Omniverse magic
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+You can use `bun` or `npm` to install dependencies and run the project,
+but I would highly recommend using `bun` for its faster performance.
 
 ```bash
-npm run dev
+# installing dependencies
+bun i # or npm i
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# starting dev server
+bun run dev # or npm run dev
 ```
 
-## Building
+## Connecting with Omniverse stream
 
-To create a production version of your app:
+The config for Omniverse is located at
 
 ```bash
-npm run build
+src/lib/omni.ts
 ```
 
-You can preview the production build with `npm run preview`.
+Modify the config object in the file
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```ts
+export const omniverseConfig: OmniverseConfig = {
+	serverIp: '172.28.33.205', // Change this to your Omniverse server IP
+	signalingPort: 49100, // Default signaling port for Omniverse streaming
+	mediaPort: 1024, // Default media port for Omniverse streaming
+	streamSource: 'direct'
+};
+```
