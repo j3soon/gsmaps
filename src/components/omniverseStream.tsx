@@ -196,9 +196,9 @@ const OmniverseStream = ({ config }: OmniverseStreamProps) => {
 	// Function to handle navigation to predefined points of interest
 	const navigateToPointOfInterest = (poiIndex: number) => {
 		const pois = [
-			{ position: [0, 20, 0], rotation: [0, 0, 0] },
-			{ position: [50, 20, 50], rotation: [0, Math.PI / 4, 0] },
-			{ position: [-50, 20, -50], rotation: [0, -Math.PI / 4, 0] },
+			{ position: [300, 300, 300], rotation: [0, 0, -Math.PI / 2] }, // Above and to the right
+			{ position: [-300, 300, 0], rotation: [-Math.PI / 4, Math.PI / 2, 0] }, // Above and to the left
+			{ position: [0, 300, -300], rotation: [-Math.PI / 4, 0, 0] }, // Above and behind
 		];
 
 		if (poiIndex >= 0 && poiIndex < pois.length) {
