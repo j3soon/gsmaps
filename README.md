@@ -1,11 +1,18 @@
 # GSMaps
 
-Google maps but its gaussian splats
+Google maps but its gaussian splats\
 with a hint of Omniverse magic
 
 ## Developing
 
-You can use `bun` or `npm` to install dependencies and run the project,
+Clone the project
+
+```bash
+git clone https://github.com/Joshimello/gsmaps.git
+cd gsmaps
+```
+
+You can use `bun` or `npm` to install dependencies and run the project,\
 but I would highly recommend using `bun` for its faster performance.
 
 ```bash
