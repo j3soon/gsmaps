@@ -1,0 +1,30 @@
+# Node modules
+node_modules
+
+# Build directory
+build
+.svelte-kit
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Git related
+.git
+.gitignore
+
+# Editor directories and files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# System files
+.DS_Store
+Thumbs.db

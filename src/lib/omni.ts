@@ -22,12 +22,17 @@ export const omniverseConfigSchema = z.object({
 
 /**
  * Default configuration for local Omniverse streaming
+ * Uses environment variables if available, otherwise uses defaults
  */
 export const omniverseConfig: OmniverseConfig = {
-	serverIp: '172.28.33.205',
-	signalingPort: 49100, // Default signaling port for Omniverse streaming
-	mediaPort: 1024, // Default media port for Omniverse streaming
-	streamSource: 'direct'
+	serverIp: typeof process !== 'undefined' ? 
+		process.env.OMNIVERSE_SERVER_IP || '172.28.33.205' : '172.28.33.205',
+	signalingPort: typeof process !== 'undefined' ? 
+		Number(process.env.OMNIVERSE_SIGNALING_PORT || '49100') : 49100,
+	mediaPort: typeof process !== 'undefined' ? 
+		Number(process.env.OMNIVERSE_MEDIA_PORT || '1024') : 1024,
+	streamSource: (typeof process !== 'undefined' && process.env.OMNIVERSE_STREAM_SOURCE === 'gfn') ? 
+		'gfn' : 'direct'
 };
 
 /**
