@@ -16,7 +16,7 @@
 			sharedMemoryForWorkers: false,
 			showLoadingUI: true
 		});
-		const addParams = [{ path: 'point_cloud.ply' }];
+		const addParams = [{ path: 'nthu_campus_part.compressed.ply' }];
 
 		try {
 			toast.promise(
