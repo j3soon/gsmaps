@@ -65,6 +65,7 @@
 </script>
 
 <T.Group bind:ref={meshRef} onclick={onSelect}>
+	<T.AxesHelper args={[100]} />
 	{#each geometry() as line, i (i)}
 		<T.Mesh>
 			<T.TubeGeometry args={[new THREE.LineCurve3(line[0], line[1]), 1, 0.1, 8, false]} />

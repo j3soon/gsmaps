@@ -37,6 +37,19 @@ docker run -p 3000:3000 \
   joshimello/gsmaps
 ```
 
+For debugging purposes:
+
+```sh
+docker run --rm -it -p 5173:5173 \
+  -v ${PWD}:/app \
+  --entrypoint /bin/bash \
+  joshimello/gsmaps
+# in the container
+bun run dev --host
+```
+
+> As a side note, I don't think the current mechanism for setting environment variables is working. We still need to manually change the `src/lib/omni.ts` file. Since the `process` object seems to be undefined.
+
 ## Developing
 
 Clone the project

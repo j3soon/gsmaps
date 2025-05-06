@@ -108,20 +108,18 @@
 
 	setInterval(() => {
 		if (hidden) return;
-		let pos = new Vector3();
-		states.controls?.getPosition(pos);
+		let camera = states.controls?.camera;
+		// You don't want to use camera.rotation in this case, since
+		// Euler angles in Three.js are rotated with respect to the
+		// local coordinate system, not the global coordinate system.
+		// Ref: https://threejs.org/docs/index.html#api/en/math/Euler.order
 
-		let sph = new Spherical();
-		states.controls?.getSpherical(sph);
-		teleportCamera([pos.x * 10, pos.y * 10, pos.z * 10], [sph.theta, Math.PI / 2 - sph.phi, 0]);
+		console.log(camera.rotation.order)
 
-		// let target = new Vector3();
-		// states.controls?.getTarget(target);
-
-		// teleportCamera(
-		// 	[pos.x * 10, pos.y * 10, pos.z * 10],
-		// 	[target.x * 10, target.y * 10, target.z * 10]
-		// );
+		teleportCamera(
+			[camera.position.x / camera.zoom, camera.position.y / camera.zoom, camera.position.z / camera.zoom],
+			[camera.quaternion.x, camera.quaternion.y, camera.quaternion.z, camera.quaternion.w]
+		);
 	}, 10);
 </script>
 
