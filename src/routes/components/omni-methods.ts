@@ -5,12 +5,12 @@ import { AppStreamer } from '@nvidia/omniverse-webrtc-streaming-library';
  * @param position - The position to teleport the camera to.
  * @param rotation - The rotation to set the camera to.
  */
-export const teleportCamera = (position: number[], target: number[]) => {
+export const teleportCamera = (position: number[], quaternion: number[]) => {
 	const message = {
 		event_type: 'teleportCameraRequest',
 		payload: {
 			position: position,
-			rotation: target // Send quaternion instead of Euler angles
+			quaternion: quaternion
 		}
 	};
 
