@@ -1,5 +1,7 @@
 # GSMaps
 
+> Please note that this repo `j3soon/gsmaps` is a fork of [`Joshimello/gsmaps`](https://github.com/Joshimello/gsmaps) for the purpose of submitting pull requests to the original repo. Please consider starring the original repo instead of this fork.
+
 Google maps but its gaussian splats\
 with a hint of Omniverse magic
 
