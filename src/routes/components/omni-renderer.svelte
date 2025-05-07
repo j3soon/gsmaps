@@ -2,7 +2,6 @@
 	import { omniverseConfig } from '$lib/omni';
 	import { AppStreamer } from '@nvidia/omniverse-webrtc-streaming-library';
 	import { onMount } from 'svelte';
-	import { Spherical, Vector3 } from 'three';
 	import { states } from '../states.svelte';
 	import { checkKitReadiness, loadScene, teleportCamera } from './omni-methods';
 
@@ -114,10 +113,19 @@
 		// local coordinate system, not the global coordinate system.
 		// Ref: https://threejs.org/docs/index.html#api/en/math/Euler.order
 
-		console.log(camera.rotation.order)
+		if (!camera) {
+			console.error('Camera not found');
+			return;
+		}
+
+		console.log(camera.rotation.order);
 
 		teleportCamera(
-			[camera.position.x / camera.zoom, camera.position.y / camera.zoom, camera.position.z / camera.zoom],
+			[
+				(camera.position.x / camera.zoom) * 20,
+				(camera.position.y / camera.zoom) * 20,
+				(camera.position.z / camera.zoom) * 20
+			],
 			[camera.quaternion.x, camera.quaternion.y, camera.quaternion.z, camera.quaternion.w]
 		);
 	}, 10);
