@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { omniverseConfig } from '$lib/omni';
+	import { omniverseConfig, sampleScenePaths } from '$lib/omni';
 	import { AppStreamer } from '@nvidia/omniverse-webrtc-streaming-library';
 	import { onMount } from 'svelte';
 	import { states } from '../states.svelte';
@@ -46,7 +46,7 @@
 							console.log('Checking Kit readiness before loading scene');
 
 							setTimeout(() => {
-								loadScene('./samples/stage01.usd');
+								loadScene(sampleScenePaths.sample0);
 								console.log('Sent request to load scene');
 							}, 2000);
 						}, 2000);

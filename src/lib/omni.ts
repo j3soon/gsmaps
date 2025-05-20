@@ -25,14 +25,17 @@ export const omniverseConfigSchema = z.object({
  * Uses environment variables if available, otherwise uses defaults
  */
 export const omniverseConfig: OmniverseConfig = {
-	serverIp: typeof process !== 'undefined' ? 
-		process.env.OMNIVERSE_SERVER_IP || '172.28.33.205' : '172.28.33.205',
-	signalingPort: typeof process !== 'undefined' ? 
-		Number(process.env.OMNIVERSE_SIGNALING_PORT || '49100') : 49100,
-	mediaPort: typeof process !== 'undefined' ? 
-		Number(process.env.OMNIVERSE_MEDIA_PORT || '1024') : 1024,
-	streamSource: (typeof process !== 'undefined' && process.env.OMNIVERSE_STREAM_SOURCE === 'gfn') ? 
-		'gfn' : 'direct'
+	serverIp: '140.114.78.196',
+	signalingPort:
+		typeof process !== 'undefined'
+			? Number(process.env.OMNIVERSE_SIGNALING_PORT || '49100')
+			: 49100,
+	mediaPort:
+		typeof process !== 'undefined' ? Number(process.env.OMNIVERSE_MEDIA_PORT || '1024') : 1024,
+	streamSource:
+		typeof process !== 'undefined' && process.env.OMNIVERSE_STREAM_SOURCE === 'gfn'
+			? 'gfn'
+			: 'direct'
 };
 
 /**
@@ -59,6 +62,7 @@ export const cameraPositions = {
  * Sample scene paths
  */
 export const sampleScenePaths = {
+	sample0: './samples/gsplat_assets/usd/example_scene.usd',
 	sample1: './samples/stage01.usd',
 	sample2: './samples/stage02.usd'
 };

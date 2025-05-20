@@ -1,11 +1,9 @@
 <script>
 	import data from '$lib/data';
-	import { T } from '@threlte/core';
 	import { interactivity } from '@threlte/extras';
 	import { states } from '../states.svelte';
 	import Camera from './camera.svelte';
 	import Location from './location.svelte';
-	import SplatRenderer from './splat-renderer.svelte';
 
 	interactivity();
 
@@ -25,11 +23,11 @@
 	// );
 </script>
 
-{#if states.mode == 'three'}
+<!-- {#if states.mode == 'three'}
 	<T.Group rotation={[-Math.PI / 2, 0, 0]} scale={[20, 20, 20]} position={[1.5, -6, -1]}>
 		<SplatRenderer />
 	</T.Group>
-{/if}
+{/if} -->
 
 {#each data.locations as location}
 	<Location
@@ -40,13 +38,13 @@
 	/>
 {/each}
 
-<T.Group>
+<!-- <T.Group>
 	{#each Object.values(data.navigation.nodes) as node}
 		<T.Mesh position={[node.coordinates[0], node.coordinates[2] - 7, node.coordinates[1]]}>
 			<T.SphereGeometry args={[0.5, 4, 4]} />
 			<T.MeshBasicMaterial />
 		</T.Mesh>
 	{/each}
-</T.Group>
+</T.Group> -->
 
 <Camera bind:controls={states.controls} />
