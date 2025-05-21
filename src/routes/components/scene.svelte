@@ -5,24 +5,8 @@
 	import { states } from '../states.svelte';
 	import Camera from './camera.svelte';
 	import Location from './location.svelte';
-	import SplatRenderer from './splat-renderer.svelte';
 
 	interactivity();
-
-	// type Edge = { id: string; a: [number, number, number]; b: [number, number, number] };
-
-	// const edges: Edge[] = Object.entries(data.navigation.edges).map(
-	// 	([
-	// 		edgeId,
-	// 		{
-	// 			node: [nid1, nid2]
-	// 		}
-	// 	]) => {
-	// 		const a = data.navigation.nodes[nid1].coordinates as [number, number, number];
-	// 		const b = data.navigation.nodes[nid2].coordinates as [number, number, number];
-	// 		return { id: edgeId, a, b };
-	// 	}
-	// );
 
 	type Node = {
 		id: string;
