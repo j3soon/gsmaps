@@ -1,6 +1,5 @@
 <script lang="ts">
 	import data from '$lib/data';
-	import { T } from '@threlte/core';
 	import { interactivity } from '@threlte/extras';
 	import { states } from '../states.svelte';
 	import Camera from './camera.svelte';
@@ -141,6 +140,6 @@
 			<T.MeshBasicMaterial />
 		</T.Mesh>
 	{/each}
-</T.Group>
+</T.Group> -->
 
 <Camera bind:controls={states.controls} />
