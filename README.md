@@ -45,6 +45,7 @@ docker run --rm -it -p 5173:5173 \
   --entrypoint /bin/bash \
   joshimello/gsmaps
 # in the container
+bun install
 bun run dev --host
 ```
 
